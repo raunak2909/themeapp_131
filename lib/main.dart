@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'app_theme_provider.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'ui_helper.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -15,17 +17,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppThemeProvider>(builder: (_, provider, child){
+    return Consumer<AppThemeProvider>(builder: (_, provider, child) {
       return MaterialApp(
         title: 'Flutter Demo',
         themeMode: provider.isDark ? ThemeMode.dark : ThemeMode.light,
-        darkTheme: ThemeData(
-            brightness: Brightness.dark),
-        theme: ThemeData(
-          backgroundColor: Colors.white,
-          brightness: Brightness.light,
-          primarySwatch: Colors.blue,
-        ),
+        darkTheme: MyAppTheme.darkTheme(),
+        theme: MyAppTheme.lightTheme(),
         home: HomePage(),
       );
     });
@@ -59,7 +56,10 @@ class HomePage extends StatelessWidget {
           children: [
             Text(
               "Hey i'm Above this..",
-              style: TextStyle(color: textColor),
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineLarge!
+                  .copyWith(fontWeight: FontWeight.bold),
             ),
             Container(
               width: 200,
@@ -68,20 +68,34 @@ class HomePage extends StatelessWidget {
               child: Center(
                 child: Text(
                   "Hey this is $title",
-                  style: TextStyle(color: textSecondaryColor),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: textSecondaryColor, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
-           Row(
-             mainAxisAlignment: MainAxisAlignment.center,
-             children: [
-               Text('Dark Mode'),
-               Switch(value: isDark, onChanged: (value){
-                 isDark = value;
-                 context.read<AppThemeProvider>().updateTheme(value);
-               })
-             ],
-           )
+            Container(
+              width: 200,
+              margin: EdgeInsets.all(11),
+              child: ElevatedButton(
+                  onPressed: () {},
+                  style: themeData.elevatedButtonTheme.style,
+                  child: Text(
+                    'Login',
+                    style: Theme.of(context).textTheme.labelMedium!.copyWith(color: textSecondaryColor),
+                  )),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Dark Mode'),
+                Switch(
+                    value: isDark,
+                    onChanged: (value) {
+                      isDark = value;
+                      context.read<AppThemeProvider>().updateTheme(value);
+                    })
+              ],
+            )
           ],
         ),
       ),
